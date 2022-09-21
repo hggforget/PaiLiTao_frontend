@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/element-ui.common'
 import test from './test'
 import picupload from './pic/picupload'
 // 引入axios
@@ -28,6 +30,7 @@ new Vue({
   components: { test },
   template: '<test/>'
 })*/
+
 
 new Vue({
   el: '#picupload',
