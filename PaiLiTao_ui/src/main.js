@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/element-ui.common'
 import test from './test'
 import picupload from './pic/picupload'
+import photo from './components/photo'
 // 引入axios
 import axios from 'axios'
 
@@ -37,4 +38,11 @@ new Vue({
   router,
   components: { picupload },
   template: '<picupload/>'
+})
+
+new Vue({
+  el: '#photo',
+  router,
+  components: { photo },
+  template: '<photo/>'
 })

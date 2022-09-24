@@ -51,18 +51,28 @@
         </el-menu>
       </el-aside>-->
       <div>
-        <input class="hide_file" ref ="leftFile" id="upload" type="file" @change="getFile($event)" accept="image/*">
-        <div class="camera" @click="clickFile">
-          <img v-if="img" class="bigImg" v-bind:src="img" alt="">
-          <img v-if="!img" class="icon" src="" alt="">
-          <span v-if="!img" class="text">上传照片</span>
-        </div>
-        <div class="block">
+       <el-container>
+        <input class="hide_file" ref ="leftFile" id="upload" type="file" accept="image/*">
+        <router-view @getFile="getFile" style="margin: auto"/>
+         <el-container  style="margin-left: 10px" class="text">
+           <span>算法选择:</span>
+        <el-select v-model="defaultValue" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+         </el-container>
+       </el-container>
+        <el-container class="text">
+          <span style="font-size: 18px;">相似度:</span>
           <el-slider
             v-model="value"
             show-input>
           </el-slider>
-        </div>
+        </el-container>
       </div>
       <el-container>
         <el-header style="text-align: right; font-size: 12px;">
@@ -79,12 +89,12 @@
             border
             style="width: 100%"
           >
-            <el-table-column prop="img_index"  label="序号"></el-table-column>
-            <el-table-column prop="img_name" label="图片名"></el-table-column>
-            <el-table-column prop="similar_rate" label="相似度"></el-table-column>
+            <el-table-column prop="img_index"  label="序号" width="40"></el-table-column>
+            <el-table-column prop="img_name" label="图片名" width="100"></el-table-column>
+            <el-table-column prop="similar_rate" label="相似度" width="100"></el-table-column>
             <el-table-column label="图片">
               <template slot-scope="scope">
-                <img :src="scope.row.img_url" style="height: 100px"/>
+                <img :src="scope.row.img_url" style="height: 100px;width: 100px"/>
               </template>
             </el-table-column>
           </el-table>
@@ -118,6 +128,7 @@ function blobToFile(theBlob, fileName){
 
 
 export default {
+  name :"photo",
   data () {
     return {
       img: null,
@@ -125,6 +136,23 @@ export default {
       value: 85,
       file :null,
       search:"",
+      options: [{
+        value: '选项1',
+        label: '特征码识图（纹理）'
+      }, {
+        value: '选项2',
+        label: '直方图识图（灰度明暗）'
+      }, {
+        value: '选项3',
+        label: '主色调识图（色调）'
+      }, {
+        value: '选项4',
+        label: '文件名相似度（文件名）'
+      }, {
+        value: '选项5',
+        label: '小图找全图（SIFT特征）'
+      }],
+      defaultValue:'',
     }
   },
   methods:{
@@ -134,17 +162,14 @@ export default {
     },
 
     // 获取选择的图片文件上传
-    getFile(e) {
-      let file = e.target.files[0];
+    getFile(data) {
+      let file = data;
       console.log(file);
       this.file=file;
       this.img = URL.createObjectURL(file);
       console.log(this.img);
     },
     // 点击触发input的点击事件
-    clickFile(){
-      this.$refs.leftFile.click();
-    },
     // 点击触发搜索事件
 
     searchimg(){
@@ -157,7 +182,7 @@ export default {
           'Content-Type':'multipart/form-data',
         }
       };  //添加请求头
-      axios.post('http://192.168.15.107:8000/picupload/',param,config)
+      axios.post('http://192.168.0.9:8000/picupload/',param,config)
         .then(res=>{
           let imgs=res.data.imgs;
           console.log(imgs);
